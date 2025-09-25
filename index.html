@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with AI - Instagram Style</title>
+    <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            height: 100vh;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Dark mode styles */
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+                color: #ffffff;
+            }
+
+            .desktop-sidebar {
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(20px);
+                border-right: 1px solid rgba(38, 38, 38, 0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+
+            .desktop-nav a {
+                color: #ffffff;
+            }
+
+            .desktop-nav a:hover {
+                background-color: #1a1a1a;
+            }
+
+            .mobile-header {
+                background: #000000;
+                border-bottom: 1px solid #262626;
+            }
+
+            .mobile-header h3 {
+                color: #ffffff;
+            }
+
+            .mobile-back-btn svg,
+            .mobile-call-btn svg {
+                fill: #ffffff;
+            }
+
+            .desktop-main {
+                background: #000000;
+            }
+
+            .desktop-chat-container {
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(20px);
+                border-left: 1px solid rgba(38, 38, 38, 0.3);
+                border-right: 1px solid rgba(38, 38, 38, 0.3);
+                box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            }
+
+            .mobile-layout {
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(20px);
+                box-shadow: none;
+            }
+
+            .chat-container {
+                background: #000000;
+            }
+
+            .chat-header {
+                background: #000000;
+                border-bottom: 1px solid #262626;
+            }
+
+            .user-info h3 {
+                color: #ffffff;
+            }
+
+            .user-info p {
+                color: #a8a8a8;
+            }
+
+            .desktop-call-btn:hover {
+                background-color: #1a1a1a;
+            }
+
+            .desktop-call-btn svg {
+                fill: #ffffff;
+            }
+
+            .chat-messages {
+                background: #000000;
+            }
+
+            .message.received {
+                background: rgba(38, 38, 38, 0.9);
+                backdrop-filter: blur(10px);
+                color: #ffffff;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .typing-indicator {
+                background: #262626;
+            }
+
+            .typing-dots span {
+                background: #a8a8a8;
+            }
+
+            .chat-input {
+                background: #000000;
+                border-top: 1px solid #262626;
+            }
+
+            .input-field {
+                background: rgba(38, 38, 38, 0.9);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .input-field::placeholder {
+                color: #a8a8a8;
+            }
+
+            .input-field:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.4), 0 4px 15px rgba(0, 0, 0, 0.3);
+            }
+
+            .error-message {
+                background: #2d1b1b;
+                color: #ff6b6b;
+                border: 1px solid #4a2c2c;
+            }
+        }
+
+        /* Desktop Layout */
+        .desktop-layout {
+            display: none;
+            height: 100vh;
+        }
+
+        .desktop-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 245px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(219, 219, 219, 0.3);
+            padding: 8px 12px 20px 12px;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .desktop-logo {
+            padding: 25px 12px 16px 12px;
+            margin-bottom: 19px;
+        }
+
+        .desktop-logo h1 {
+            font-size: 29px;
+            font-weight: bold;
+            margin: 0;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .desktop-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .desktop-nav li {
+            margin-bottom: 4px;
+        }
+
+        .desktop-nav a {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            text-decoration: none;
+            color: #262626;
+            border-radius: 8px;
+            transition: background-color 0.2s;
+        }
+
+        .desktop-nav a:hover {
+            background-color: #f2f2f2;
+        }
+
+        .desktop-nav a.active {
+            font-weight: bold;
+        }
+
+        .desktop-nav span {
+            margin-left: 16px;
+            font-size: 16px;
+        }
+
+        .desktop-main {
+            margin-left: 245px;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            background: #fafafa;
+        }
+
+        .desktop-chat-container {
+            width: 100%;
+            max-width: 935px;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-left: 1px solid rgba(219, 219, 219, 0.3);
+            border-right: 1px solid rgba(219, 219, 219, 0.3);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border-radius: 0 20px 20px 0;
+            overflow: hidden;
+        }
+
+        /* Mobile Layout */
+        .mobile-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            margin: 0;
+            border-radius: 0;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .mobile-header {
+            background: white;
+            border-bottom: 1px solid #dbdbdb;
+            padding: 0 16px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .mobile-back-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            margin-left: -8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-back-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #262626;
+        }
+
+        .mobile-user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 1;
+            margin-left: 8px;
+        }
+
+        .mobile-user-info .profile-pic {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+
+        .mobile-user-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+            color: #262626;
+        }
+
+        .mobile-call-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .mobile-call-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-call-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #262626;
+        }
+
+        .mobile-call-btn:active {
+            opacity: 0.6;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .desktop-header-actions {
+            margin-left: auto;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .desktop-call-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background-color 0.2s;
+        }
+
+        .desktop-call-btn:hover {
+            background-color: #f2f2f2;
+        }
+
+        .desktop-call-btn svg {
+            width: 24px;
+            height: 24px;
+            fill: #262626;
+        }
+
+        .profile-pic {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+            overflow: hidden;
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-info h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+            color: #262626;
+        }
+
+        .user-info p {
+            margin: 0;
+            font-size: 12px;
+            color: #8e8e8e;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 16px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: white;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 14px;
+            line-height: 1.4;
+            word-wrap: break-word;
+            animation: messageSlide 0.3s ease-out;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.sent {
+            align-self: flex-end;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .message.received {
+            align-self: flex-start;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            color: #262626;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+
+
+        .chat-input {
+            padding: 16px;
+            background: white;
+            border-top: 1px solid #dbdbdb;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .input-field {
+            flex: 1;
+            border: 1px solid rgba(219, 219, 219, 0.3);
+            border-radius: 22px;
+            padding: 10px 16px;
+            font-size: 14px;
+            outline: none;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3), 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .input-field:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 10px 16px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            color: #1877f2;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .typing-indicator {
+            display: none;
+            align-self: flex-start;
+            background: #efefef;
+            border-radius: 18px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
+            width: 6px;
+            height: 6px;
+            background: #8e8e8e;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+                opacity: 0.4;
+            }
+            30% {
+                transform: translateY(-10px);
+                opacity: 1;
+            }
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ffcdd2;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            margin: 8px 0;
+            text-align: center;
+        }
+
+        /* Custom Scrollbar - Light Mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Custom Scrollbar - Dark Mode */
+        @media (prefers-color-scheme: dark) {
+            ::-webkit-scrollbar-track {
+                background: #1a1a1a;
+            }
+
+            ::-webkit-scrollbar-thumb {
+                background: #404040;
+            }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555555;
+            }
+        }
+
+        /* Mobile First - Default Mobile Styles */
+        @media (max-width: 767px) {
+            .desktop-layout {
+                display: none !important;
+            }
+            
+            .mobile-layout {
+                display: flex;
+                height: 100vh;
+                margin: 0;
+            }
+            
+            .input-field {
+                font-size: 16px; /* Prevents zoom on iOS */
+            }
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 768px) {
+            .mobile-layout {
+                display: none !important;
+            }
+            
+            .desktop-layout {
+                display: block;
+            }
+            
+            .chat-header {
+                padding: 20px 24px;
+                border-bottom: 1px solid #dbdbdb;
+            }
+            
+            .profile-pic {
+                width: 44px;
+                height: 44px;
+                font-size: 18px;
+            }
+            
+            .user-info h3 {
+                font-size: 18px;
+            }
+            
+            .user-info p {
+                font-size: 14px;
+            }
+            
+            .chat-messages {
+                padding: 20px;
+            }
+            
+            .message {
+                max-width: 70%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Layout -->
+    <div class="mobile-layout">
+        <div class="mobile-header">
+            <button class="mobile-back-btn">
+                <svg viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+            </button>
+            <div class="mobile-user-info">
+                <div class="profile-pic">
+                    <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='??';">
+                </div>
+                <h3>Swapneel's Assistant</h3>
+            </div>
+            <div class="mobile-call-buttons">
+                <button class="mobile-call-btn" onclick="startCall('audio')">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                </button>
+                <button class="mobile-call-btn" onclick="startCall('video')">
+                    <svg viewBox="0 0 24 24">
+                        <polygon points="23 7 16 12 23 17 23 7"/>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <div class="chat-container">
+            <div class="chat-messages" id="mobileMessages">
+                <div class="message received">
+                    Hi there! ?? I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
+                </div>
+                
+                <div class="typing-indicator" id="mobileTypingIndicator">
+                    <div class="typing-dots">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" class="input-field" id="mobileMessageInput" placeholder="Message..." maxlength="500">
+                <button class="send-btn" id="mobileSendBtn">Send</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Desktop Layout -->
+    <div class="desktop-layout">
+        <div class="desktop-sidebar">
+            <div class="desktop-logo">
+                <h1>Instagram</h1>
+            </div>
+            <nav>
+                <ul class="desktop-nav">
+                    <li><a href="#"><span>??</span><span>Home</span></a></li>
+                    <li><a href="#"><span>??</span><span>Search</span></a></li>
+                    <li><a href="#"><span>??</span><span>Explore</span></a></li>
+                    <li><a href="#"><span>??</span><span>Reels</span></a></li>
+                    <li><a href="#" class="active"><span>??</span><span>Messages</span></a></li>
+                    <li><a href="#"><span>??</span><span>Notifications</span></a></li>
+                    <li><a href="#"><span>?</span><span>Create</span></a></li>
+                    <li><a href="#"><span>??</span><span>Profile</span></a></li>
+                </ul>
+            </nav>
+        </div>
+        
+        <div class="desktop-main">
+            <div class="desktop-chat-container">
+                <div class="chat-header">
+                    <div class="profile-pic">
+                        <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='??';">
+                    </div>
+                    <div class="user-info">
+                        <h3>Swapneel's Assistant</h3>
+                        <p>Online • Ask me about Swapneel Das</p>
+                    </div>
+                    <div class="desktop-header-actions">
+                        <button class="desktop-call-btn" onclick="startCall('audio')">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                            </svg>
+                        </button>
+                        <button class="desktop-call-btn" onclick="startCall('video')">
+                            <svg viewBox="0 0 24 24">
+                                <polygon points="23 7 16 12 23 17 23 7"/>
+                                <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                            </svg>
+                        </button>
+                        <button class="desktop-call-btn">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="1"/>
+                                <circle cx="19" cy="12" r="1"/>
+                                <circle cx="5" cy="12" r="1"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="desktopMessages">
+                    <div class="message received">
+                        Hi there! ?? I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
+                    </div>
+                    
+                    <div class="typing-indicator" id="desktopTypingIndicator">
+                        <div class="typing-dots">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="chat-input">
+                    <input type="text" class="input-field" id="desktopMessageInput" placeholder="Message..." maxlength="500">
+                    <button class="send-btn" id="desktopSendBtn">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Detect if mobile or desktop
+        const isMobile = window.innerWidth < 768;
+        
+        // Get elements based on screen size
+        const messageInput = document.getElementById(isMobile ? 'mobileMessageInput' : 'desktopMessageInput');
+        const sendBtn = document.getElementById(isMobile ? 'mobileSendBtn' : 'desktopSendBtn');
+        const messagesContainer = document.getElementById(isMobile ? 'mobileMessages' : 'desktopMessages');
+        const typingIndicator = document.getElementById(isMobile ? 'mobileTypingIndicator' : 'desktopTypingIndicator');
+
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
+        const API_KEY = 'AIzaSyDHvXeuxdC3E9Vkb-hr4A6omWEy5JRo8j4';
+
+        const userProfile = {
+            "name": "Swapneel Das",
+            "age": "21 years old",
+            "education": "B.A. (honours) Department of English",
+            "profession": "student, also a full-stack web developer",
+            "location": "Sunamganj, Bangladesh",
+            "social": {
+                "Facebook": "Swapneel Das or www.facebook.com/swapneeldasFX",
+                "Instagram": "@swapneel_das",
+                "Twitter/X": "@swapneel_das__",
+                "GitHub": "AlgoNeel"
+            },
+            "interests": {
+                "favorite_color": "black and white",
+                "favorite_food": "homemade Biriyani",
+                "favorite_movie": "Avatar",
+                "favorite_tv_show": "Peaky Blinders",
+                "pets": "a talking bird",
+                "hobbies": "coding",
+                "sports_to_play": "cricket and badminton",
+                "sports_to_watch": "cricket and football (mostly football)",
+                "music_genre": "pop and rock",
+                "favorite_book": "Atomic Habits",
+                "vacation_dream": "Switzerland",
+                "preferred_season": "winter",
+                "drink_preference": "coffee",
+                "lifestyle_preference": "night owl, staying at home more, texting over calling, mountains over the beach",
+                "video_games": "GTA V, Class of Clan, Call of Duty",
+                "cooking_interest": "Yes, enjoys cooking sometimes",
+                "staying_active": "Yes, likes to stay active and exercise regularly",
+                "favorite_holiday": "Durga Puja",
+                "favorite_ice_cream": "chocolate",
+                "animal_preference": "dogs more than cats",
+                "weekend_activities": "relaxing, catching up on coding, learning new skills",
+                "shopping_preference": "doesn't like shopping",
+                "childhood_memory": "sending a text message via his elder brother's Facebook account to his friend 'I am Sajeeb Boom Boom' in 2013",
+                "art_and_crafts": "enjoys graphic design",
+                "skills": "coding and problem-solving"
+            }
+        };
+
+
+
+        function addMessage(text, isSent = true) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isSent ? 'sent' : 'received'}`;
+            messageDiv.textContent = text;
+            
+            messagesContainer.insertBefore(messageDiv, typingIndicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error-message';
+            errorDiv.textContent = message;
+            messagesContainer.insertBefore(errorDiv, typingIndicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
+        }
+
+        function setInputState(disabled) {
+            messageInput.disabled = disabled;
+            sendBtn.disabled = disabled;
+        }
+
+        async function getAIResponse(userMessage) {
+            const systemPrompt = `You are Swapneel Das's personal assistant. People are asking you questions about Swapneel Das. Here's all the information about him: ${JSON.stringify(userProfile)}. 
+
+            Your role is to provide information about Swapneel to anyone who asks. Respond in a friendly, professional way as if you're his personal assistant on Instagram. Keep responses informative but conversational (1-3 sentences usually). Use emojis occasionally. Always refer to him as "Swapneel" or "he/him" when talking about him to others. Do not start responses with greetings like "Hello" or "Hi there" - just answer the question directly.
+
+            User question: ${userMessage}`;
+
+            try {
+                const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        contents: [{
+                            parts: [{
+                                text: systemPrompt
+                            }]
+                        }],
+                        generationConfig: {
+                            temperature: 0.7,
+                            maxOutputTokens: 200,
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.candidates[0].content.parts[0].text;
+            } catch (error) {
+                console.error('Error calling AI API:', error);
+                throw error;
+            }
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            messageInput.value = '';
+            setInputState(true);
+            showTyping();
+
+            try {
+                const aiResponse = await getAIResponse(text);
+                hideTyping();
+                addMessage(aiResponse, false);
+            } catch (error) {
+                hideTyping();
+                showError('Sorry, I had trouble connecting. Please try again!');
+            } finally {
+                setInputState(false);
+                messageInput.focus();
+            }
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-focus on input
+        messageInput.focus();
+
+        // Call functionality
+        function startCall(type) {
+            const callType = type === 'video' ? 'Video' : 'Audio';
+            const message = `${callType} call feature is not available in this demo, but in a real Instagram chat, this would start a ${callType.toLowerCase()} call with Swapneel's assistant! ??`;
+            
+            // Add a system message about the call
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message received';
+            messageDiv.style.background = '#e3f2fd';
+            messageDiv.style.color = '#1976d2';
+            messageDiv.style.fontStyle = 'italic';
+            messageDiv.textContent = message;
+            
+            messagesContainer.insertBefore(messageDiv, typingIndicator);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984b3183164aa488',t:'MTc1ODgxMDM1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
