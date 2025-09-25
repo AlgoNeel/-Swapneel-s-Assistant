@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat with AI - Instagram Style</title>
+    <title>Swapneel's Assistant</title>
     <style>
         body {
             box-sizing: border-box;
@@ -664,7 +664,7 @@
             </button>
             <div class="mobile-user-info">
                 <div class="profile-pic">
-                    <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='??';">
+                    <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🤖';">
                 </div>
                 <h3>Swapneel's Assistant</h3>
             </div>
@@ -686,7 +686,7 @@
         <div class="chat-container">
             <div class="chat-messages" id="mobileMessages">
                 <div class="message received">
-                    Hi there! ?? I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
+                    Hi there!  I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
                 </div>
                 
                 <div class="typing-indicator" id="mobileTypingIndicator">
@@ -713,14 +713,14 @@
             </div>
             <nav>
                 <ul class="desktop-nav">
-                    <li><a href="#"><span>??</span><span>Home</span></a></li>
-                    <li><a href="#"><span>??</span><span>Search</span></a></li>
-                    <li><a href="#"><span>??</span><span>Explore</span></a></li>
-                    <li><a href="#"><span>??</span><span>Reels</span></a></li>
-                    <li><a href="#" class="active"><span>??</span><span>Messages</span></a></li>
-                    <li><a href="#"><span>??</span><span>Notifications</span></a></li>
-                    <li><a href="#"><span>?</span><span>Create</span></a></li>
-                    <li><a href="#"><span>??</span><span>Profile</span></a></li>
+                    <li><a href="#"><span>🏠</span><span>Home</span></a></li>
+                    <li><a href="#"><span>🔍</span><span>Search</span></a></li>
+                    <li><a href="#"><span>🧭</span><span>Explore</span></a></li>
+                    <li><a href="#"><span>🎬</span><span>Reels</span></a></li>
+                    <li><a href="#" class="active"><span>💬</span><span>Messages</span></a></li>
+                    <li><a href="#"><span>❤️</span><span>Notifications</span></a></li>
+                    <li><a href="#"><span>➕</span><span>Create</span></a></li>
+                    <li><a href="#"><span>👤</span><span>Profile</span></a></li>
                 </ul>
             </nav>
         </div>
@@ -729,11 +729,11 @@
             <div class="desktop-chat-container">
                 <div class="chat-header">
                     <div class="profile-pic">
-                        <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='??';">
+                        <img src="https://img.freepik.com/free-vector/graident-ai-robot-vectorart_78370-4114.jpg?semt=ais_incoming&w=740&q=80" alt="AI Assistant Avatar" class="avatar-img" onerror="this.style.display='none'; this.parentElement.innerHTML='🤖';">
                     </div>
                     <div class="user-info">
                         <h3>Swapneel's Assistant</h3>
-                        <p>Online � Ask me about Swapneel Das</p>
+                        <p>Online • Ask me about Swapneel Das</p>
                     </div>
                     <div class="desktop-header-actions">
                         <button class="desktop-call-btn" onclick="startCall('audio')">
@@ -759,7 +759,7 @@
 
                 <div class="chat-messages" id="desktopMessages">
                     <div class="message received">
-                        Hi there! ?? I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
+                        Hi there! 👋 I'm Swapneel Das's personal assistant. Feel free to ask me anything about him - his interests, skills, background, or anything else you'd like to know!
                     </div>
                     
                     <div class="typing-indicator" id="desktopTypingIndicator">
@@ -789,15 +789,16 @@
         const messagesContainer = document.getElementById(isMobile ? 'mobileMessages' : 'desktopMessages');
         const typingIndicator = document.getElementById(isMobile ? 'mobileTypingIndicator' : 'desktopTypingIndicator');
 
-        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent';
-        const API_KEY = 'AIzaSyDHvXeuxdC3E9Vkb-hr4A6omWEy5JRo8j4';
+        const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent';
+        const API_KEY = 'AIzaSyAmMyyuRSwVkU0J636jNiAjJ7_2YzZM7DA';
 
         const userProfile = {
             "name": "Swapneel Das",
             "age": "21 years old",
-            "education": "B.A. (honours) Department of English",
+            "education": "B.A.honours Department of English",
             "profession": "student, also a full-stack web developer",
             "location": "Sunamganj, Bangladesh",
+            "lived in 2018 to 2024": "Sylhet, Bangladesh",
             "social": {
                 "Facebook": "Swapneel Das or www.facebook.com/swapneeldasFX",
                 "Instagram": "@swapneel_das",
@@ -945,7 +946,7 @@
         // Call functionality
         function startCall(type) {
             const callType = type === 'video' ? 'Video' : 'Audio';
-            const message = `${callType} call feature is not available in this demo, but in a real Instagram chat, this would start a ${callType.toLowerCase()} call with Swapneel's assistant! ??`;
+            const message = `${callType} call feature is not available in this chat, but in a real Instagram chat, this would start a ${callType.toLowerCase()} call with Swapneel's assistant! 📞`;
             
             // Add a system message about the call
             const messageDiv = document.createElement('div');
@@ -959,5 +960,5 @@
             messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984b3183164aa488',t:'MTc1ODgxMDM1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984b6cf7e651d05f',t:'MTc1ODgxMjc4OC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
